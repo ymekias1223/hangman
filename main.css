@@ -1,0 +1,13 @@
+h1 {
+	text-align: center
+}
+body{
+	color:white;
+	background-image: url("assets/asset1.jpg");
+}
+#game{
+	padding:50px;
+	font-size: 24px;
+	
+
+}

@@ -27,9 +27,10 @@ var wordbank = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla",
 "Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela",
 "Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
 
-var guesses=6;
+var guesses=7;
 var options = [];
 var done = false;
+var correct = false;
 
 
 
@@ -39,7 +40,7 @@ function getWord(arr){
 	return word;
 }
 
-function isContainedIn(letter,word){
+function isContainedIn(letter,word,options){
 	var adresses = [];
 	for (var i=0; i<(word.length-1); i++){
 		if (word[i] === letter) {
@@ -50,20 +51,29 @@ function isContainedIn(letter,word){
 		return false;
 	}
 	else{
-		console.log(adresses)
-		return adresses;
+		for (var j=0; j<adresses.length;j++){
+			options[j]= letter;
+			return options;
+		}
 	}
 }
+function displayWord(word){
+	var emptyArr=[];
+	for (var i=0;i<word.length;i++){
+		emptyArr.push('_')
+	}
+	return emptyArr;
+}
 
-function guessesLeft(){
-	return guesses;
-}
-function updateGuesses(){
-	guesses --;
-}
-function resetGuesses(){
-	guesses = 6;
-}
+// function guessesLeft(){
+// 	return guesses;
+// }
+// function updateGuesses(){
+// 	guesses --;
+// }
+// function resetGuesses(){
+// 	guesses = 6;
+// }
 function isDone(){
 	done =true;
 }
@@ -75,56 +85,96 @@ function createOptions(word){
 	}
 	return options;
 }
-function updateOptions(key, word){
-	console.log(this);
-	var update = isContainedIn(key,word);
-	if (update !== false){
-		for (var i = 0;i<update.length;i++){
-			//overwriting the original element.  update[i]: index, key: character
-			options[update[i]] = key;
-		}
-	}
+function incorrectAnswer(){
+	guesses = guesses-1;
 }
+// function updateOptions(key, word){
+// 	console.log(this);
+// 	var update = isContainedIn(key,word);
+// 	if (update){
+// 		for (var i = 0;i<update.length;i++){
+// 			//overwriting the original element.  update[i]: index, key: character
+// 			options[update[i]] = key;
+// 		}
+// 	}
+// }
 
 	var word = getWord(wordbank);
-	createOptions(word);
+	var blanks = createOptions(word);
 //var userText = document.getElementById("user-text");
 //console.log(userText);
-document.onkeyup = function(event){
-	//choose word and assign to local variable
-	//console.log(wordbank);
-	console.log(word);
+// document.onkeyup = function(event){
+// 	//choose word and assign to local variable
+// 	//console.log(wordbank);
+// 	console.log(blanks);
 
-	if (guesses !== 0 || done === false){
+// 	if (guesses !== 0 || done === false){
 		
-		//create the ------ based on # of letters in mystery word
+// 		//create the ------ based on # of letters in mystery word
 		
-		console.log(options);
-		//storing the user input in variable w/ key listener and loggin it to console
+// 		console.log(blanks);
+// 		//storing the user input in variable w/ key listener and loggin it to console
 
-		console.log(event.key);
-		console.log('you chose '+ event.key);
+// 		console.log(event.key);
+// 		console.log('you chose '+ event.key);
 
-		//checking to see if the guess is right,
-		if (isContainedIn(event.key,word)){        
-			updateOptions(isContainedIn(event.key,word),event.key);
-			console.log(options);
+// 		//checking to see if the guess is right,
+// 		if (isContainedIn(event.key,word,blanks)){
+// 			console.log(blanks);
 			
-			//conditional to check if all the letters have been guessed.  if so done is now true
-			if (isContainedIn('_',word)===false){
-				isDone();
-			}
-		}else{ //if guess is incorrect, guesses are updated and displayed
-			updateGuesses();
-			console.log('you have '+guessesLeft()+' guesses left');
-		}
-		var html = 
-			'<p> you chose: '+event.key+'</p>'
-			'<p> progress: '+options+'</p>'
-			'<p> guesses: '+guesses+'</p>';
+// 			//conditional to check if all the letters have been guessed.  if so done is now true
+
+// 		}else{ //if guess is incorrect, guesses are updated and displayed
+// 			updateGuesses();
+// 			console.log('you have '+guessesLeft()+' guesses left');
+// 		}
+// 		if (isContainedIn('_',word)===false){
+// 			isDone();
+
+// 		}
+// 		var html = 
+// 			'<p> you chose: '+event.key+'</p>';
+// 			'<p> progress: '+options+'</p>';
+// 			'<p> guesses: '+guesses+'</p>';
 
 
 
-	}
+// 	}
+
+// }
+
+document.onkeyup = function(event){
+
+    //choose word and assign to local variable
+    for (var i = 0; i < word.length; i++){
+        if (event.key == word[i]){
+            options[i] = event.key;
+            correct = true;
+        }
+        // else {
+        // 	// console.log(guesses);
+        //  //    incorrectAnswer();
+        //  //    console.log(guesses);
+        //     if (guesses === 0){
+        //         //isDone();
+        //     }
+        // }
+        if (options.join("") === word ) {
+            isDone();
+        }
+    }
+    if (correct ===false){
+    	incorrectAnswer();
+    }
+    correct = false;
+
+
+
+    var html =
+        '<p><h3> you chose: '+ event.key +'</h3></p>' +
+        '<p><h3> progress: '+ options +'</h3></p>' +
+        '<p><h3> guesses: '+ guesses +'</h3></p>'+
+        '<p><h3> done: '+ done +'</h3></p>'
+        document.getElementById("game").innerHTML = html;
 
 }
